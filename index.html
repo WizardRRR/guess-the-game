@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=F, initial-scale=1.0">
+  <title>Document</title>
+  <script defer type="module" src="main.js"></script>
+</head>
+
+<body>
+  <h1>Juego adivina el número</h1>
+  <p>
+    Hemos seleccionado un número aleatorio entre 1 y 100. Fíjate si lo puedes adivinar en 10 turnos o menos. Vamos a
+    decirte si tu número es más alto o más bajo.
+  </p>
+  <span id="attempMessage"></span>
+  <div>
+    <label for="">Adivina el numero:</label>
+    <input type="number">
+    <button>Enviar respuesta</button>
+  </div>
+  <div id="wrappedAttemps" style="display: flex; gap: 10px;">
+
+  </div>
+  <span id="message"></span>
+  <br>
+  <button id="reset">Empezar de nuevo!</button>
+</body>
+
+</html>
