@@ -1,74 +1,86 @@
+import { getMessageAttempt, getNumberRandom } from "./utils.js"
+
+const d = document
+
+const START_NUMBER = 100
+const END_NUMBER = 150
+const NUMBER_ATTEMPS = 1
+
 // seleccionando elementos del dom
-const input = document.querySelector('input')
-const submit = document.querySelector('button')
-const message = document.getElementById('message')
-const wrappedAttempts = document.getElementById('wrappedAttemps')
-const buttonReset = document.getElementById('reset')
-const attempMessage = document.getElementById('attempMessage')
+const input = d.querySelector('input')
+const submit = d.querySelector('button')
+const message = d.getElementById('message')
+const wrappedAttempts = d.getElementById('wrappedAttemps')
+const buttonReset = d.getElementById('reset')
+const attempMessage = d.getElementById('attempMessage')
 
-attempMessage.textContent = 'Te quedan 10 intentos'
+// añadiendo eventos
+submit.addEventListener('click', handleClickSend)
+buttonReset.addEventListener('click', resetGame)
 
-// variables
-let attempt = 0
+let currentAttempt = 0
 let attempts = []
-let mysteriousNumber = getNumberRandom()
+let mysteriousNumber = getNumberRandom(START_NUMBER, END_NUMBER)
+console.log(mysteriousNumber)
+attempMessage.textContent = getMessageAttempt(NUMBER_ATTEMPS)
 
-// funcionalidad de enviar un intento
-submit.addEventListener('click', function () {
-  if (isNaN(parseInt(input.value))) {
-    return alert('Alto ahi rufian, ingresa un número valido!')
+function handleClickSend() {
+  if (!(validateNumber())) {
+    input.value = ''
+    return alert(`Alto ahi rufian, ingresa un número entre ${START_NUMBER} y ${END_NUMBER}!`)
   }
-  if (attempt === 10) {
+
+  let inputValue = parseInt(input.value)
+
+  if (currentAttempt === NUMBER_ATTEMPS) {
     message.textContent = 'Ya has superado el limite de intentos, has perdido!'
     input.disabled = true
     return
   }
-  if (parseInt(input.value) === mysteriousNumber) {
+
+  if (inputValue === mysteriousNumber) {
     message.textContent = 'Felicidades adivinaste el número random'
     input.disabled = true
-  } else if (parseInt(input.value) > mysteriousNumber) {
+  } else if (inputValue > mysteriousNumber) {
     message.textContent = 'El número es muy grande!'
-  } else if (parseInt(input.value) < mysteriousNumber) {
+  } else if (inputValue < mysteriousNumber) {
     message.textContent = 'El número es muy bajo!'
   }
-  attempts.push(parseInt(input.value))
 
+  attempts.push(inputValue)
+  paintAttemps(attempts)
+  input.value = ''
+  ++currentAttempt
+  attempMessage.textContent = `Te quedan ${NUMBER_ATTEMPS - currentAttempt} intentos!`
+}
+
+function paintAttemps(attempts) {
+  const wrappedAttempts = d.getElementById('wrappedAttemps')
   let htmlAttemps = ''
 
-  attempts.forEach(function (attempt) {
-    htmlAttemps += `<span>${attempt}</span>`
+  attempts.forEach(function (currentAttempt) {
+    htmlAttemps += `<span>${currentAttempt}</span>`
   })
 
-
   wrappedAttempts.innerHTML = htmlAttemps
-  input.value = ''
-  ++attempt
-  attempMessage.textContent = `Te quedan ${10 - attempt} intentos!`
-  console.log('lista de intentos:', attempts)
-  console.log('intentos:', attempt)
-})
+}
 
-// funcionalidad de reiniciar el juego
-buttonReset.addEventListener('click', function () {
+
+function resetGame() {
   attempts = []
   input.value = ''
   wrappedAttempts.innerHTML = ''
-  attempt = 0
-  attempMessage.textContent = `Te quedan ${10 - attempt} intentos!`
+  currentAttempt = 0
+  attempMessage.textContent = `Te quedan ${NUMBER_ATTEMPS - currentAttempt} intentos!`
   message.textContent = ''
   input.disabled = false
-})
+}
 
-// contralando input
-input.addEventListener('input', function (event) {
-  if (!(parseInt(input.value) <= 100 && parseInt(input.value) >= 0)) {
-    input.value = ''
-  }
-})
-
-function getNumberRandom() {
-  let num = Math.round(
-    Math.random() * 100
-  )
-  return num
+function validateNumber() {
+  let inputValue = parseInt(input.value)
+  const isValid =
+    inputValue <= END_NUMBER &&
+    inputValue >= START_NUMBER &&
+    !isNaN(inputValue)
+  return isValid
 }
